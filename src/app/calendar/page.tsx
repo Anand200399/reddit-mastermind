@@ -19,6 +19,14 @@ export default async function CalendarPage() {
     )
   }
 
+  const { data: allKeywords } = await supabase
+  .from('keywords')
+  .select('id, keyword')
+
+  const keywordMap = new Map((allKeywords ?? []).map((k: any) => [k.id, k.keyword]))
+
+
+
   const { data: posts } = await supabase
     .from('posts')
     .select('id, title, scheduled_at, keyword_ids, subreddits(name), personas(username)')
@@ -51,7 +59,7 @@ export default async function CalendarPage() {
                         {p.title}
                          </Link>
                 </td>
-              <td style={{ padding: 8, borderBottom: '1px solid #222' }}>{(p.keyword_ids ?? []).join(', ')}</td>
+              <td style={{ padding: 8, borderBottom: '1px solid #222' }}>{(p.keyword_ids ?? []).map((id: string) => keywordMap.get(id) ?? id).join(', ')}</td>
             </tr>
           ))}
         </tbody>

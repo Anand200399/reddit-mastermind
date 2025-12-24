@@ -1,4 +1,6 @@
 import { supabase } from '@/lib/supabase'
+import Link from 'next/link'
+
 
 function buildTree(comments: any[]) {
   const byId = new Map<string, any>()
@@ -61,6 +63,12 @@ export default async function PostThreadPage({ params }: { params: Promise<{ pos
 
   return (
     <main style={{ padding: 24 }}>
+        <Link
+        href="/calendar"
+        style={{ textDecoration: 'underline', display: 'inline-block', marginBottom: 12 }}
+        >
+            ← Back to Calendar
+        </Link>
       <div style={{ opacity: 0.9 }}>
         <div>
           <strong>{post.subreddits?.name}</strong> • posted by <strong>{post.personas?.username}</strong> • {new Date(post.scheduled_at).toUTCString()}
