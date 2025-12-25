@@ -1,36 +1,98 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Reddit Mastermind – Planning Algorithm Assignment
 
-## Getting Started
+## Overview
 
-First, run the development server:
+This project focuses on **designing a planning algorithm for Reddit content**, as requested in the assignment.
+
+The goal is **not** to post to Reddit, but to plan:
+- what should be posted
+- where it should be posted
+- who should post it
+- when it should be posted
+- how the conversation should look
+
+Posting and commenting are assumed to be handled by existing systems.
+
+---
+
+## What this project does
+
+For a given company, the system generates a **weekly Reddit content plan**.
+
+Each planned week includes:
+- multiple Reddit posts
+- assigned personas (fake Reddit users)
+- target subreddits with posting limits
+- scheduled post times
+- rotated keywords
+- realistic comment threads with replies
+
+The output is a **weekly content calendar** that can be reviewed and reused.
+
+---
+
+## Generate Week (core logic)
+
+Clicking **Generate Week**:
+
+1. Finds the most recent planned week
+2. Creates the next week (Week N + 1)
+3. Plans posts for that week based on company settings
+4. Rotates personas, subreddits, and keywords
+5. Avoids repeating titles and topics
+6. Respects subreddit posting limits
+7. Schedules posts at realistic times
+8. Plans natural comment and reply threads
+9. Saves everything to the database
+
+Each week is stored and does not overwrite previous weeks.
+
+---
+
+## Viewing planned data
+
+- `/calendar` shows the latest planned week by default
+- A dropdown allows viewing **previous weeks**
+- Clicking a post opens a **thread view** with nested comments
+
+This makes it easy to inspect how the planning algorithm behaves over time.
+
+---
+
+## What this project does NOT do
+
+- Does not post to Reddit
+- Does not use Reddit APIs
+- Does not authenticate users
+- Does not scrape real Reddit data
+
+This is intentional and matches the assignment requirement to focus only on planning.
+
+---
+
+## Tech used
+
+- Next.js (App Router)
+- Supabase (Postgres)
+- TypeScript
+
+---
+
+## Database setup
+
+All database SQL is included in the repository:
+
+        supabase/
+        ├── schema.sql -- table definitions
+        ├── seed.sql -- sample data (company, personas, subreddits, keywords)
+        └── reset.sql -- clears generated weeks, posts, and comments
+
+The system runs entirely on **sample data**, as expected for this assignment.
+
+---
+
+## Running locally
 
 ```bash
+npm install
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
-```
-
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
-
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
-
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
-
-## Learn More
-
-To learn more about Next.js, take a look at the following resources:
-
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
-
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
-
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
