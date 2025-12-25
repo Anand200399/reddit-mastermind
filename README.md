@@ -1,36 +1,74 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Reddit Mastermind
 
-## Getting Started
+## What this is
 
-First, run the development server:
+This project is a **planning system** for Reddit content.
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
-```
+It plans:
+- what to post
+- where to post
+- who posts it
+- when it should be posted
+- what comments and replies should look like
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+It does **not** post to Reddit.  
+Posting is assumed to be handled by another system.
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+---
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+## What “Generate Week” does
 
-## Learn More
+When you click **Generate Week**, the app:
+- creates the next week (Week 1, Week 2, etc.)
+- plans multiple Reddit posts for that week
+- rotates personas, subreddits, and keywords
+- avoids repeating titles and topics
+- respects subreddit post limits
+- schedules posts at realistic times
+- creates natural comment threads
 
-To learn more about Next.js, take a look at the following resources:
+Each week is saved and can be viewed later.
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+---
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+## How to view data
 
-## Deploy on Vercel
+- `/calendar` shows the latest planned week
+- Use the dropdown to view older weeks
+- Click a post to see the full thread with comments
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+---
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+## Tech used
+
+- Next.js
+- Supabase (Postgres)
+- TypeScript
+
+---
+
+## Database
+
+All database SQL is included in the repo:
+
+supabase/
+├── schema.sql
+├── seed.sql
+└── reset.sql
+
+
+Sample data is used for:
+- company
+- personas
+- subreddits
+- keywords
+
+---
+
+## Run locally
+
+
+    npm install
+    npm run dev
+
+
