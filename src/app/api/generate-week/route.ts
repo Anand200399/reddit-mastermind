@@ -6,11 +6,11 @@ type Company = {
   posts_per_week: number
 }
 
-/** ---------- Date helpers ---------- */
+
 function startOfWeekMonday(date: Date) {
-  // Monday as start of week
+
   const d = new Date(Date.UTC(date.getUTCFullYear(), date.getUTCMonth(), date.getUTCDate()))
-  const day = d.getUTCDay() // 0=Sun..6=Sat
+  const day = d.getUTCDay() 
   const diffToMonday = (day === 0 ? -6 : 1) - day
   d.setUTCDate(d.getUTCDate() + diffToMonday)
   d.setUTCHours(0, 0, 0, 0)
@@ -27,7 +27,7 @@ function iso(d: Date) {
   return d.toISOString()
 }
 
-/** ---------- 1A) Random / selection helpers ---------- */
+
 function randInt(min: number, max: number) {
   return Math.floor(Math.random() * (max - min + 1)) + min
 }
@@ -54,7 +54,7 @@ function shuffle<T>(arr: T[]) {
   return a
 }
 
-/** ---------- 1H) Persona-tone helpers ---------- */
+
 function tone(bio: string) {
   const b = (bio ?? '').toLowerCase()
   if (b.includes('sales')) return 'sales'
@@ -73,7 +73,7 @@ function commentLine(t: string) {
 }
 
 export async function POST() {
-  // 1) Load the (only) company
+
   const { data: companies, error: cErr } = await supabaseServer.from('companies').select('id, posts_per_week').limit(1)
 
   if (cErr || !companies?.length) {
@@ -82,7 +82,7 @@ export async function POST() {
 
   const company = companies[0] as Company
 
-  // 2) Load personas/subreddits/keywords for this company
+
   const [{ data: personas, error: pErr }, { data: subreddits, error: sErr }, { data: keywords, error: kErr }] =
     await Promise.all([
       supabaseServer.from('personas').select('id, username, bio').eq('company_id', company.id),
@@ -100,7 +100,7 @@ export async function POST() {
     return NextResponse.json({ error: 'Missing personas/subreddits/keywords' }, { status: 400 })
   }
 
-  // 3) Determine next week_start + week_number
+
   const { data: lastWeeks } = await supabaseServer
     .from('weeks')
     .select('week_start, week_number')
@@ -118,7 +118,7 @@ export async function POST() {
     weekStart = addDaysUTC(new Date(last.week_start + 'T00:00:00Z'), 7)
   }
 
-  // 4) Create week row
+
   const { data: weekRow, error: wErr } = await supabaseServer
     .from('weeks')
     .insert([{ company_id: company.id, week_start: weekStart.toISOString().slice(0, 10), week_number: weekNumber }])
@@ -127,7 +127,7 @@ export async function POST() {
 
   if (wErr) return NextResponse.json({ error: wErr.message }, { status: 500 })
 
-  // 1B) Template pools (titles + bodies)
+
   const titleTemplates = [
     'How are you making slides faster these days? (tools/workflow)',
     'Best AI presentation maker for client decks? Looking for honest takes',
@@ -155,7 +155,7 @@ export async function POST() {
       `If you’ve used ${kws.join(' / ')}, what are the real tradeoffs?`,
   ]
 
-  // 1C) Pull recent history (avoid repetition + help rotation)
+
   const { data: recentPosts } = await supabaseServer
     .from('posts')
     .select('title, subreddit_id, author_persona_id, keyword_ids')
@@ -169,10 +169,10 @@ export async function POST() {
 
   const postsPerWeek = Math.max(1, company.posts_per_week ?? 3)
 
-  // Mon..Fri offsets, we will pick from these with some variety
+
   const defaultDayOffsets = [1, 2, 3, 4, 5]
 
-  // 1D) Track weekly subreddit caps
+
   const subredditWeekCounts = new Map<string, number>()
 
   const usedSubredditIds: string[] = []
@@ -182,14 +182,14 @@ export async function POST() {
   const commentsToInsert: any[] = []
 
   for (let i = 0; i < postsPerWeek; i++) {
-    // day selection: cycle Tue–Fri-ish
+
     const dayOffset = defaultDayOffsets[i % defaultDayOffsets.length]
     const scheduled = addDaysUTC(weekStart, dayOffset)
 
-    // 1F) vary scheduled time a bit (16:00–21:45 UTC)
+
     scheduled.setUTCHours(randInt(16, 21), [0, 15, 30, 45][randInt(0, 3)], 0, 0)
 
-    // 1D) Pick subreddit respecting weekly cap + avoid immediate repetition
+
     const shuffledSubs = shuffle(subreddits)
 
     let subreddit =
@@ -203,7 +203,7 @@ export async function POST() {
     subredditWeekCounts.set(subreddit.id, (subredditWeekCounts.get(subreddit.id) ?? 0) + 1)
     usedSubredditIds.push(subreddit.id)
 
-    // Pick author persona: avoid immediate repetition; also gently avoid recent authors
+
     const shuffledAuthors = shuffle(personas)
     let author =
       shuffledAuthors.find((p: any) => {
@@ -214,7 +214,6 @@ export async function POST() {
 
     usedPersonaIds.push(author.id)
 
-    // 1G) Pick keywords avoiding recently used
     const keywordPool = keywords.filter((k: any) => !recentKeywordIds.has(k.id))
     const pool = keywordPool.length >= 6 ? keywordPool : keywords
     const chosen = sampleManyUnique(pool, randInt(2, 3))
@@ -223,12 +222,12 @@ export async function POST() {
 
     const postId = `P${weekNumber}-${i + 1}`
 
-    // 1E) Non-repeating title selection
+
     const availableTitles = titleTemplates.filter((t) => !recentTitles.has(t))
     const title = (availableTitles.length ? sample(availableTitles) : sample(titleTemplates))
     recentTitles.add(title)
 
-    // Body: pick a template for variety
+
     const body = sample(bodyTemplates)(keywordText.slice(0, Math.min(3, keywordText.length)))
 
     postsToInsert.push({
@@ -242,7 +241,6 @@ export async function POST() {
       keyword_ids: chosen.map((k: any) => k.id),
     })
 
-    // ---------- Comments (4 total with nesting) ----------
     const commenters = personas.filter((p: any) => p.id !== author.id)
     const c1Persona = sample(commenters)
     const c2Persona = sample(commenters.filter((p: any) => p.id !== c1Persona.id))
@@ -307,7 +305,6 @@ export async function POST() {
     )
 
     // small extra: gently avoid repeating the same subreddit too much recently
-    // (not required, but helps realism)
     if (recentSubredditIds.length) {
       recentSubredditIds.unshift(subreddit.id)
       if (recentSubredditIds.length > 10) recentSubredditIds.pop()

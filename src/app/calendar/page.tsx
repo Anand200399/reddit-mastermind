@@ -7,7 +7,7 @@ export default async function CalendarPage({
 }: {
   searchParams: Promise<{ week?: string }>
 }) {
-  // STEP 1: read selected week from URL (?week=1)
+  // STEP 1: read selected week from URL 
   const params = await searchParams
   const selectedWeekNumber = params.week ? Number(params.week) : null
 
@@ -67,7 +67,7 @@ export default async function CalendarPage({
       <h1>Week {week.week_number} Calendar</h1>
       <p>Week start: {week.week_start}</p>
 
-      {/* ✅ Week dropdown */}
+      {/* Week dropdown */}
       <WeekSelector weeks={allWeeks ?? []} />
 
       <table style={{ width: '100%', marginTop: 16, borderCollapse: 'collapse' }}>
