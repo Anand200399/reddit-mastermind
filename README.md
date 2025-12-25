@@ -93,6 +93,37 @@ The system runs entirely on **sample data**, as expected for this assignment.
 
 ## Running locally
 
-```bash
-npm install
-npm run dev
+        npm install
+        npm run dev
+
+## Deployment (Live Demo)
+
+This project is deployed on **Vercel**.
+
+### Live Demo
+        https://reddit-mastermind-johs.vercel.app
+
+### How deployment works
+- The app is built using **Next.js (App Router)**
+- It is connected to **Supabase** for database access
+- Vercel automatically deploys the app on every push to the main branch
+
+### Environment Variables (Vercel)
+The following environment variables are configured in Vercel:
+
+        'NEXT_PUBLIC_SUPABASE_URL'
+        'NEXT_PUBLIC_SUPABASE_ANON_KEY'
+        'SUPABASE_SERVICE_ROLE_KEY'
+
+These are required for reading data from Supabase.
+
+### How to test the app
+1. Open the live link
+2. Click **Generate Week** on the home page
+3. View the weekly calendar on `/calendar`
+4. Use the dropdown to switch between previous weeks
+5. Click a post title to open the full thread with nested comments
+
+> Note: This project focuses on **planning and scheduling logic only**.  
+> Actual posting to Reddit is assumed to be handled by external systems.
+
