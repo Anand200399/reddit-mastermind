@@ -1,74 +1,98 @@
-# Reddit Mastermind
+# Reddit Mastermind – Planning Algorithm Assignment
 
-## What this is
+## Overview
 
-This project is a **planning system** for Reddit content.
+This project focuses on **designing a planning algorithm for Reddit content**, as requested in the assignment.
 
-It plans:
-- what to post
-- where to post
-- who posts it
+The goal is **not** to post to Reddit, but to plan:
+- what should be posted
+- where it should be posted
+- who should post it
 - when it should be posted
-- what comments and replies should look like
+- how the conversation should look
 
-It does **not** post to Reddit.  
-Posting is assumed to be handled by another system.
-
----
-
-## What “Generate Week” does
-
-When you click **Generate Week**, the app:
-- creates the next week (Week 1, Week 2, etc.)
-- plans multiple Reddit posts for that week
-- rotates personas, subreddits, and keywords
-- avoids repeating titles and topics
-- respects subreddit post limits
-- schedules posts at realistic times
-- creates natural comment threads
-
-Each week is saved and can be viewed later.
+Posting and commenting are assumed to be handled by existing systems.
 
 ---
 
-## How to view data
+## What this project does
 
-- `/calendar` shows the latest planned week
-- Use the dropdown to view older weeks
-- Click a post to see the full thread with comments
+For a given company, the system generates a **weekly Reddit content plan**.
+
+Each planned week includes:
+- multiple Reddit posts
+- assigned personas (fake Reddit users)
+- target subreddits with posting limits
+- scheduled post times
+- rotated keywords
+- realistic comment threads with replies
+
+The output is a **weekly content calendar** that can be reviewed and reused.
+
+---
+
+## Generate Week (core logic)
+
+Clicking **Generate Week**:
+
+1. Finds the most recent planned week
+2. Creates the next week (Week N + 1)
+3. Plans posts for that week based on company settings
+4. Rotates personas, subreddits, and keywords
+5. Avoids repeating titles and topics
+6. Respects subreddit posting limits
+7. Schedules posts at realistic times
+8. Plans natural comment and reply threads
+9. Saves everything to the database
+
+Each week is stored and does not overwrite previous weeks.
+
+---
+
+## Viewing planned data
+
+- `/calendar` shows the latest planned week by default
+- A dropdown allows viewing **previous weeks**
+- Clicking a post opens a **thread view** with nested comments
+
+This makes it easy to inspect how the planning algorithm behaves over time.
+
+---
+
+## What this project does NOT do
+
+- Does not post to Reddit
+- Does not use Reddit APIs
+- Does not authenticate users
+- Does not scrape real Reddit data
+
+This is intentional and matches the assignment requirement to focus only on planning.
 
 ---
 
 ## Tech used
 
-- Next.js
+- Next.js (App Router)
 - Supabase (Postgres)
 - TypeScript
 
 ---
 
-## Database
+## Database setup
 
-All database SQL is included in the repo:
+All database SQL is included in the repository:
 
         supabase/
-        ├── schema.sql
-        ├── seed.sql
-        └── reset.sql
+        ├── schema.sql -- table definitions
+        ├── seed.sql -- sample data (company, personas, subreddits, keywords)
+        └── reset.sql -- clears generated weeks, posts, and comments
 
-
-Sample data is used for:
-- company
-- personas
-- subreddits
-- keywords
+The system runs entirely on **sample data**, as expected for this assignment.
 
 ---
 
-## Run locally
+## Running locally
 
-
-    npm install
-    npm run dev
-
-
+```bash
+npm install
+npm run dev
