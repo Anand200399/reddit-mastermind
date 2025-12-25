@@ -51,10 +51,10 @@ Each week is saved and can be viewed later.
 
 All database SQL is included in the repo:
 
-supabase/
-├── schema.sql
-├── seed.sql
-└── reset.sql
+        supabase/
+        ├── schema.sql
+        ├── seed.sql
+        └── reset.sql
 
 
 Sample data is used for:
